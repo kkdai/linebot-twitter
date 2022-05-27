@@ -1,0 +1,40 @@
+{
+  "name": "LINEBot Twitter Game",
+  "description": "Twitter Game in LINEBot",
+  "repository": "https://github.com/kkdai/linebot-twitter",
+  "keywords": [
+    "Line",
+    "go",
+    "static"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/kr/heroku-buildpack-go.git"
+    },
+    {
+      "url": "heroku/go"
+    }
+  ],
+  "env": {
+    "ChannelAccessToken": {
+      "description": "LINEBot Channel Access Token",
+      "required": true
+    },
+    "ChannelSecret": {
+      "description": "LINEBot Channel Secret",
+      "required": true
+    },
+    "ConsumerKey": {
+      "description": "Twitter Consumer Key",
+      "required": true
+    },
+    "ConsumerSecret": {
+      "description": "Twitter Consumer Secret",
+      "required": true
+    },
+    "CallbackURL": {
+      "description": "Callback URL from Heroku or your hosted address. It should present as http://YOURDOMAIN.com/maketoken",
+      "required": true
+    }
+  }
+}

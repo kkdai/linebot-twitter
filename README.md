@@ -10,6 +10,10 @@ LINE BotTemplate: A simple Golang LINE Bot Template for LINE Bot API
 Installation and Usage
 =============
 
+### Just Deploy this on Heroku
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 Inspired By
 =============
 

@@ -1,4 +1,4 @@
-module github.com/kkdai/linebot-twiitter
+module github.com/kkdai/linebot-twitter
 
 // +heroku goVersion go1.17
 go 1.17

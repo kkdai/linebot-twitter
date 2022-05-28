@@ -1,3 +1,9 @@
+# github.com/kkdai/twitter v0.1.0
+## explicit; go 1.18
+github.com/kkdai/twitter
 # github.com/line/line-bot-sdk-go/v7 v7.16.0
 ## explicit; go 1.11
 github.com/line/line-bot-sdk-go/v7/linebot
+# github.com/mrjones/oauth v0.0.0-20190623134757-126b35219450
+## explicit
+github.com/mrjones/oauth

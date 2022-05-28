@@ -19,19 +19,58 @@ import (
 	"os"
 	"strconv"
 
+	tt "github.com/kkdai/twitter"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
 var bot *linebot.Client
+var ConsumerKey string
+var ConsumerSecret string
+var CallbackURL string
+var twitterClient *tt.ServerClient
+
+func init() {
+	//Twitter Dev Info from https://developer.twitter.com/en/apps
+	ConsumerKey = os.Getenv("ConsumerKey")
+	ConsumerSecret = os.Getenv("ConsumerSecret")
+
+	//This URL need note as follow:
+	// 1. Could not be localhost, change your hosts to a specific domain name
+	// 2. This setting must be identical with your app setting on twitter Dev
+	// 3. It should be present as "http://YOURDOMAIN.com/maketoken"
+	CallbackURL = os.Getenv("CallbackURL")
+}
 
 func main() {
 	var err error
+
+	// Init LINEBot client
 	bot, err = linebot.New(os.Getenv("ChannelSecret"), os.Getenv("ChannelAccessToken"))
 	log.Println("Bot:", bot, " err:", err)
+
+	// Init twttr client
+	fmt.Println("[app] Init server key=", ConsumerKey, " secret=", ConsumerSecret)
+	twitterClient = tt.NewServerClient(ConsumerKey, ConsumerSecret)
+
+	// API entry
+	http.HandleFunc("/maketoken", GetTwitterToken)
 	http.HandleFunc("/callback", callbackHandler)
+
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
+}
+
+func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Enter Get twitter token")
+	values := r.URL.Query()
+	verificationCode := values.Get("oauth_verifier")
+	tokenKey := values.Get("oauth_token")
+
+	twitterClient.CompleteAuth(tokenKey, verificationCode)
+	timelineURL := fmt.Sprintf("https://%s/time", r.Host)
+
+	http.Redirect(w, r, timelineURL, http.StatusTemporaryRedirect)
 }
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {

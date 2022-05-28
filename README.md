@@ -1,11 +1,7 @@
 LINE BotTemplate: A simple Golang LINE Bot Template for LINE Bot API
 ==============
 
- [![GoDoc](https://godoc.org/github.com/kkdai/linebot-twitter.svg?status.svg)](https://godoc.org/github.com/kkdai/linebot-twitter)  
-
- ![Go](https://github.com/kkdai/linebot-twitter/workflows/Go/badge.svg)
-
-[![goreportcard.com](https://goreportcard.com/badge/github.com/kkdai/linebot-twitter)](https://goreportcard.com/report/github.com/kkdai/linebot-twitter)
+ [![GoDoc](https://godoc.org/github.com/kkdai/linebot-twitter.svg?status.svg)](https://godoc.org/github.com/kkdai/linebot-twitter)  ![Go](https://github.com/kkdai/linebot-twitter/workflows/Go/badge.svg) [![goreportcard.com](https://goreportcard.com/badge/github.com/kkdai/linebot-twitter)](https://goreportcard.com/report/github.com/kkdai/linebot-twitter)
 
 Installation and Usage
 =============

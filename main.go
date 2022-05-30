@@ -61,6 +61,12 @@ func main() {
 	http.ListenAndServe(addr, nil)
 }
 
+func GetTimeLine(w http.ResponseWriter, r *http.Request) {
+	timeline, bits, _ := twitterClient.QueryTimeLine(1)
+	ret := fmt.Sprintf("TimeLine=%v", timeline)
+	fmt.Fprintf(w, ret+" \n\n The item is: "+string(bits))
+}
+
 func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Enter Get twitter token")
 	values := r.URL.Query()

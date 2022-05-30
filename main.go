@@ -19,6 +19,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/go-pg/pg/v10"
 	tt "github.com/kkdai/twitter"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -28,6 +29,7 @@ var ConsumerKey string
 var ConsumerSecret string
 var CallbackURL string
 var twitterClient *tt.ServerClient
+var meta = &GameData{}
 
 func init() {
 	//Twitter Dev Info from https://developer.twitter.com/en/apps
@@ -56,9 +58,26 @@ func main() {
 	http.HandleFunc("/maketoken", GetTwitterToken)
 	http.HandleFunc("/callback", callbackHandler)
 
+	// DB Init
+	options, _ := pg.ParseURL(os.Getenv("DATABASE_URL"))
+	db := pg.Connect(options)
+	meta.Db = db
+	defer db.Close()
+
+	err = createSchema(db)
+	if err != nil {
+		panic(err)
+	}
+
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
 	http.ListenAndServe(addr, nil)
+}
+
+func GetTimeLine(w http.ResponseWriter, r *http.Request) {
+	timeline, bits, _ := twitterClient.QueryTimeLine(1)
+	ret := fmt.Sprintf("TimeLine=%v", timeline)
+	fmt.Fprintf(w, ret+" \n\n The item is: "+string(bits))
 }
 
 func GetTwitterToken(w http.ResponseWriter, r *http.Request) {

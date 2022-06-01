@@ -60,14 +60,17 @@ func main() {
 	http.HandleFunc("/callback", callbackHandler)
 
 	// DB Init
-	options, _ := pg.ParseURL(os.Getenv("DATABASE_URL"))
-	db := pg.Connect(options)
-	meta.Db = db
-	defer db.Close()
+	dbURL := os.Getenv("DATABASE_URL")
+	if len(dbURL) > 0 {
+		options, _ := pg.ParseURL(dbURL)
+		db := pg.Connect(options)
+		meta.Db = db
+		defer db.Close()
 
-	err = createSchema(db)
-	if err != nil {
-		panic(err)
+		err = createSchema(db)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	port := os.Getenv("PORT")

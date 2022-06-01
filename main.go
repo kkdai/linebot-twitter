@@ -30,6 +30,7 @@ var ConsumerSecret string
 var CallbackURL string
 var twitterClient *tt.ServerClient
 var meta = &GameData{}
+var user = &GameUsers{}
 
 func init() {
 	//Twitter Dev Info from https://developer.twitter.com/en/apps
@@ -74,24 +75,6 @@ func main() {
 	http.ListenAndServe(addr, nil)
 }
 
-func GetTimeLine(w http.ResponseWriter, r *http.Request) {
-	timeline, bits, _ := twitterClient.QueryTimeLine(1)
-	ret := fmt.Sprintf("TimeLine=%v", timeline)
-	fmt.Fprintf(w, ret+" \n\n The item is: "+string(bits))
-}
-
-func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Enter Get twitter token")
-	values := r.URL.Query()
-	verificationCode := values.Get("oauth_verifier")
-	tokenKey := values.Get("oauth_token")
-
-	twitterClient.CompleteAuth(tokenKey, verificationCode)
-	timelineURL := fmt.Sprintf("https://%s/time", r.Host)
-
-	http.Redirect(w, r, timelineURL, http.StatusTemporaryRedirect)
-}
-
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
 	events, err := bot.ParseRequest(r)
 
@@ -114,10 +97,19 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					log.Println("Quota err:", err)
 				}
-				// message.ID: Msg unique ID
-				// message.Text: Msg text
-				if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("msg ID:"+message.ID+":"+"Get:"+message.Text+" , \n OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
-					log.Print(err)
+
+				if message.Text == "auth" {
+					user.uid = event.Source.UserID
+					log.Println("UID =", user.uid)
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("準備認證: "+GetTwitterURL())).Do(); err != nil {
+						log.Print(err)
+					}
+				} else {
+					// message.ID: Msg unique ID
+					// message.Text: Msg text
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("msg ID:"+message.ID+":"+"Get:"+message.Text+" , \n OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
+						log.Print(err)
+					}
 				}
 
 			// Handle only on Sticker message

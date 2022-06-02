@@ -19,6 +19,21 @@ func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	verificationCode = values.Get("oauth_verifier")
 	tokenKey = values.Get("oauth_token")
 
+	SendQuestion()
+}
+
+// RedirectUserToTwitter
+func GetTwitterURL() string {
+	requestUrl, _ := twitterClient.GetAuthURL(CallbackURL)
+	log.Println("CallbackURL=", CallbackURL, " requestUrl url=", requestUrl)
+	return requestUrl
+}
+
+func SendQuestion() {
+	if len(verificationCode) == 0 || len(verificationCode) == 0 {
+		return
+	}
+
 	// Complete twitter auth.
 	twitterClient.CompleteAuth(tokenKey, verificationCode)
 
@@ -31,11 +46,4 @@ func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	if _, err := bot.PushMessage(user.uid, linebot.NewTextMessage("Timeline \n"+ret)).Do(); err != nil {
 		log.Print(err)
 	}
-}
-
-// RedirectUserToTwitter
-func GetTwitterURL() string {
-	requestUrl, _ := twitterClient.GetAuthURL(CallbackURL)
-	log.Println("CallbackURL=", CallbackURL, " requestUrl url=", requestUrl)
-	return requestUrl
 }

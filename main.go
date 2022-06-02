@@ -30,7 +30,6 @@ var ConsumerSecret string
 var CallbackURL string
 var twitterClient *tt.ServerClient
 var meta = &GameData{}
-var user = &GameUsers{}
 
 func init() {
 	//Twitter Dev Info from https://developer.twitter.com/en/apps
@@ -105,6 +104,7 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				// Check user if they already auth.
+				user := &GameUsers{}
 				if err := user.Get(event.Source.UserID); err != nil {
 					// Not exist user
 					log.Println("Not exist user:", event.Source.UserID)

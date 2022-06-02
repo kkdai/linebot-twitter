@@ -12,14 +12,16 @@ import (
 func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Enter Get twitter token")
 	values := r.URL.Query()
-	user.VerificationCode = values.Get("oauth_verifier")
-	user.TokenKey = values.Get("oauth_token")
+	u := GameUsers{}
+	u.Uid = values.Get("uid")
+	u.VerificationCode = values.Get("oauth_verifier")
+	u.TokenKey = values.Get("oauth_token")
 
-	if err := user.Update(); err != nil {
+	if err := u.Update(); err != nil {
 		log.Println("Update user failed, ", err)
 	}
 
-	GetQuestion()
+	GetQuestion(u)
 }
 
 // RedirectUserToTwitter
@@ -29,13 +31,13 @@ func GetTwitterURL() string {
 	return requestUrl
 }
 
-func GetQuestion() {
-	if len(user.VerificationCode) == 0 || len(user.TokenKey) == 0 {
+func GetQuestion(u GameUsers) {
+	if len(u.VerificationCode) == 0 || len(u.TokenKey) == 0 {
 		return
 	}
 
 	// Complete twitter auth.
-	twitterClient.CompleteAuth(user.TokenKey, user.VerificationCode)
+	twitterClient.CompleteAuth(u.TokenKey, u.VerificationCode)
 
 	// Get timeline
 	timeline, _, _ := twitterClient.QueryTimeLine(1)
@@ -43,7 +45,7 @@ func GetQuestion() {
 	// fmt.Fprintf(w, ret+" \n\n The item is: "+string(bits))
 
 	// push message
-	if _, err := bot.PushMessage(user.Uid, linebot.NewTextMessage("Timeline \n"+ret)).Do(); err != nil {
+	if _, err := bot.PushMessage(u.Uid, linebot.NewTextMessage("Timeline \n"+ret)).Do(); err != nil {
 		log.Print(err)
 	}
 }

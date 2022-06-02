@@ -61,16 +61,19 @@ func main() {
 
 	// DB Init
 	dbURL := os.Getenv("DATABASE_URL")
-	if len(dbURL) > 0 {
-		options, _ := pg.ParseURL(dbURL)
-		db := pg.Connect(options)
-		meta.Db = db
-		defer db.Close()
+	options, _ := pg.ParseURL(dbURL)
+	db := pg.Connect(options)
+	meta.Db = db
+	defer db.Close()
 
-		err = createSchema(db)
-		if err != nil {
-			panic(err)
-		}
+	// Create DB if not exist.
+	if err = meta.CreateSchema(); err != nil {
+		panic(err)
+	}
+
+	// List all user when start.
+	if err = meta.ShowAll(); err != nil {
+		panic(err)
 	}
 
 	port := os.Getenv("PORT")
@@ -102,8 +105,8 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 				}
 
 				if message.Text == "auth" {
-					user.uid = event.Source.UserID
-					log.Println("UID =", user.uid)
+					user.Uid = event.Source.UserID
+					log.Println("UID =", user.Uid)
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("準備認證: "+GetTwitterURL())).Do(); err != nil {
 						log.Print(err)
 					}

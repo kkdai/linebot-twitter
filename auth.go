@@ -43,7 +43,7 @@ func SendQuestion() {
 	// fmt.Fprintf(w, ret+" \n\n The item is: "+string(bits))
 
 	// push message
-	if _, err := bot.PushMessage(user.uid, linebot.NewTextMessage("Timeline \n"+ret)).Do(); err != nil {
+	if _, err := bot.PushMessage(user.Uid, linebot.NewTextMessage("Timeline \n"+ret)).Do(); err != nil {
 		log.Print(err)
 	}
 }

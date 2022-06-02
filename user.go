@@ -19,7 +19,7 @@ type GameUsers struct {
 func (u *GameUsers) Add() {
 	_, err := meta.Db.Model(u).Insert()
 	if err != nil {
-		meta.Log.Println(err)
+		log.Println(err)
 	}
 }
 
@@ -30,10 +30,10 @@ func (u *GameUsers) Get(uid string) (err error) {
 		Where("uid = ?", uid).
 		Select()
 	if err != nil {
-		meta.Log.Println(err)
+		log.Println(err)
 		return err
 	}
-	meta.Log.Println("User Data DB result= ", user)
+	log.Println("User Data DB result= ", user)
 
 	u.Uid = user.Uid
 	u.Win = user.Win
@@ -54,7 +54,7 @@ func (u *GameUsers) Update() (err error) {
 		Where("user_id = ?", u.Uid).
 		Update()
 	if err != nil {
-		meta.Log.Println(err)
+		log.Println(err)
 		return err
 	}
 	return nil

@@ -8,8 +8,7 @@ import (
 )
 
 type GameData struct {
-	Db  *pg.DB
-	Log *log.Logger
+	Db *pg.DB
 }
 
 func (g *GameData) ShowAll() (err error) {

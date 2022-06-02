@@ -19,7 +19,7 @@ func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	verificationCode = values.Get("oauth_verifier")
 	tokenKey = values.Get("oauth_token")
 
-	SendQuestion()
+	GetQuestion()
 }
 
 // RedirectUserToTwitter
@@ -29,7 +29,7 @@ func GetTwitterURL() string {
 	return requestUrl
 }
 
-func SendQuestion() {
+func GetQuestion() {
 	if len(verificationCode) == 0 || len(verificationCode) == 0 {
 		return
 	}

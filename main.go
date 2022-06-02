@@ -104,17 +104,20 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					log.Println("Quota err:", err)
 				}
 
-				if message.Text == "auth" {
+				// Check user if they already auth.
+				if err := user.Get(event.Source.UserID); err != nil {
+					// Not exist user
+					log.Println("Not exist user:", event.Source.UserID)
 					user.Uid = event.Source.UserID
-					log.Println("UID =", user.Uid)
+					user.Add()
+					meta.ShowAll()
+
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("準備認證: "+GetTwitterURL())).Do(); err != nil {
 						log.Print(err)
 					}
 				} else {
-					// message.ID: Msg unique ID
-					// message.Text: Msg text
-					SendQuestion()
-
+					// Exist user, reply question directly.
+					GetQuestion()
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("msg ID:"+message.ID+":"+"Get:"+message.Text+" , \n OK! remain message:"+strconv.FormatInt(quota.Value, 10))).Do(); err != nil {
 						log.Print(err)
 					}

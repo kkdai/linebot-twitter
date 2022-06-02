@@ -8,16 +8,16 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
 
-//temp
-var verificationCode string
-var tokenKey string
-
 // GetTwitterToken:
 func GetTwitterToken(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Enter Get twitter token")
 	values := r.URL.Query()
-	verificationCode = values.Get("oauth_verifier")
-	tokenKey = values.Get("oauth_token")
+	user.VerificationCode = values.Get("oauth_verifier")
+	user.TokenKey = values.Get("oauth_token")
+
+	if err := user.Update(); err != nil {
+		log.Println("Update user failed, ", err)
+	}
 
 	GetQuestion()
 }
@@ -30,12 +30,12 @@ func GetTwitterURL() string {
 }
 
 func GetQuestion() {
-	if len(verificationCode) == 0 || len(verificationCode) == 0 {
+	if len(user.VerificationCode) == 0 || len(user.TokenKey) == 0 {
 		return
 	}
 
 	// Complete twitter auth.
-	twitterClient.CompleteAuth(tokenKey, verificationCode)
+	twitterClient.CompleteAuth(user.TokenKey, user.VerificationCode)
 
 	// Get timeline
 	timeline, _, _ := twitterClient.QueryTimeLine(1)
